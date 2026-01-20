@@ -68,3 +68,56 @@ This introduces **experience-driven decision making**.
   - confidence updates
 
 ---
+## Why This Matters
+
+This is the **first moment the agent learns strategy**, not facts.
+
+Instead of asking:
+> “What should I do?”
+
+The agent starts asking:
+> “What has worked before in situations like this?”
+
+This is the foundation for:
+- planning
+- reasoning
+- failure avoidance
+- long-term autonomy
+
+---
+
+## Non-Toy Extensions
+
+These upgrades prevent the system from becoming brittle or overconfident.
+
+### Plan Decay
+- Older experiences gradually lose influence
+- Prevents overfitting to outdated strategies
+
+### Confidence Scores
+- Each plan carries a confidence value
+- Updated after every execution
+
+### Plan Fingerprints
+- Plans are stored as abstract representations
+- Avoids dependence on raw text or phrasing
+
+---
+
+## Open Questions
+
+- How similar must contexts be to reuse a plan?
+- When should a successful plan be retired?
+- How do we balance exploration vs exploitation?
+- Should failure always penalize, or sometimes inform?
+
+---
+
+## Position in the Project Set
+
+This project is the foundation for:
+- strategy selection
+- failure-aware planning
+- long-horizon decision making
+
+Everything that follows **builds on this**.
