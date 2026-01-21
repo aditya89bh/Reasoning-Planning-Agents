@@ -145,3 +145,36 @@ class ExplicitReasoningAgent:
         )
 
         return trace
+
+# ---------- Setup ----------
+
+evidence_store = EvidenceStore()
+hypothesis_memory = HypothesisMemory()
+
+# Seed evidence
+evidence_store.add(
+    "Recent logs show many 401 authentication errors",
+    ["api", "auth", "error"]
+)
+evidence_store.add(
+    "Server metrics show normal CPU and memory usage",
+    ["server", "metrics"]
+)
+evidence_store.add(
+    "Rate limit thresholds were exceeded yesterday",
+    ["api", "rate_limit"]
+)
+
+agent = ExplicitReasoningAgent(evidence_store, hypothesis_memory)
+
+# ---------- Run One Reasoning Episode ----------
+
+observation = agent.observe(
+    question="Why is the API failing for users?",
+    context_tags=["api", "error"]
+)
+
+trace = agent.reason(observation)
+
+print("\n=== REASONING TRACE ===")
+print(json.dumps(asdict(trace), indent=2))
