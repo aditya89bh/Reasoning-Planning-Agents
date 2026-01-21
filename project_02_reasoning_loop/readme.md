@@ -36,3 +36,25 @@ This creates proto-thinking that is:
 - self-correcting (to a point)
 
 ---
+
+## Key Components
+
+### 1. Observation
+A structured input describing:
+- goal / question
+- context tags
+- constraints
+- known facts (if any)
+
+### 2. Hypothesis Memory
+A store of:
+- hypotheses generated for similar situations
+- which ones were accepted or rejected
+- confidence and timestamps
+
+### 3. Evidence Store
+A store of “evidence snippets” from:
+- past episodes
+- curated facts
+- tool outputs (later)
+- human notes (later)
