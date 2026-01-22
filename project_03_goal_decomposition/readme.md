@@ -44,3 +44,29 @@ with:
 - Completion state tracking
 
 ---
+
+## Why This Matters
+
+This is where agents stop being task executors
+and start behaving like operators.
+
+Planning is impossible without decomposition.
+
+---
+
+## Non-Toy Extensions
+
+- Refuse impossible goals
+- Add time/resource constraints
+- Estimate subgoal difficulty
+- Reuse partial goal trees
+
+---
+
+## Success Criteria
+
+The agent should:
+- decompose goals consistently
+- track progress explicitly
+- reuse substructures across runs
+- recover from partial failure
