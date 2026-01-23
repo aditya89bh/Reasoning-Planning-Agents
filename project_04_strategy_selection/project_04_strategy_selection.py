@@ -128,3 +128,50 @@ class StrategyDecision:
 # -----------------------------
 # Strategy Memory
 # -----------------------------
+
+memory = StrategyMemory()
+
+memory.add_strategy(
+    Strategy(
+        name="Systematic Debugging",
+        description="Careful step-by-step debugging using logs and tests",
+        context_tags=["debug", "failure", "engineering"],
+        confidence=0.65
+    )
+)
+
+memory.add_strategy(
+    Strategy(
+        name="Fast Iteration",
+        description="Quick experiments and rapid fixes",
+        context_tags=["time_pressure", "prototype"],
+        confidence=0.45
+    )
+)
+
+memory.add_strategy(
+    Strategy(
+        name="Risk Mitigation",
+        description="Conservative approach with fallbacks and backups",
+        context_tags=["high_stakes", "demo", "release"],
+        confidence=0.7
+    )
+)
+
+selector = StrategySelector(memory)
+
+
+# -----------------------------
+# Run One Strategy Decision
+# -----------------------------
+
+context = ["high_stakes", "demo", "time_pressure"]
+
+decision = selector.select(context)
+
+print("\n=== STRATEGY DECISION ===")
+print(json.dumps(asdict(decision), indent=2))
+
+print("\n=== UPDATED STRATEGY CONFIDENCE ===")
+for s in memory.all():
+    print(s.name, "→", round(s.confidence, 3), "used:", s.usage_count)
