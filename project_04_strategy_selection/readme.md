@@ -25,3 +25,19 @@ We recognize situations and say:
 That ability is **strategy selection**.
 
 ---
+
+## What This Project Builds
+
+A system that allows an agent to:
+
+- define reusable **strategy templates**
+- match **context → strategy**
+- score strategies using past confidence
+- select between strategies dynamically
+- update strategy confidence over time
+
+The agent no longer plans blindly.
+It **chooses how to think and act**.
+
+---
+
