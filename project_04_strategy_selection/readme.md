@@ -95,3 +95,52 @@ Strategies that fail slowly fade.
 
 ---
 
+## Why This Matters
+
+This is where agents start to feel **human-like**.
+
+Instead of:
+> “What steps should I generate?”
+
+The agent asks:
+> “What kind of approach fits this situation?”
+
+This is the foundation for:
+- strategic judgment
+- behavioral consistency
+- scalable autonomy
+
+---
+
+## Relationship to Other Projects
+
+- **Project 01:** Learns from past outcomes
+- **Project 02:** Reasons with evidence
+- **Project 03:** Decomposes goals into structure
+- **Project 04:** Chooses *how* to approach the problem
+
+Future projects build on this:
+- Project 05 → failure-aware strategy adjustment
+- Project 06 → long-horizon strategy planning
+
+---
+
+## Mental Model
+
+> Humans don’t plan from scratch.  
+> They select patterns that have worked before.
+
+This project gives agents that ability.
+
+---
+
+## Success Criteria
+
+The agent should:
+- select different strategies for different contexts
+- reuse high-confidence strategies
+- explore alternatives occasionally
+- adapt strategy confidence over time
+
+If this works, the agent has **judgment**, not just intelligence.
+
