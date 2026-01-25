@@ -96,3 +96,40 @@ Constraints are added automatically to future plans, such as:
 Constraints shape future behavior without hardcoding logic.
 
 ---
+
+### 6. Execution Simulator
+A simulated executor:
+- introduces stochastic failures
+- allows testing failure-handling logic
+- validates that repeated failures are avoided
+
+This keeps learning realistic.
+
+---
+
+## Why This Matters
+
+This project introduces a critical property of intelligence:
+
+> **An intelligent system does not fail the same way twice.**
+
+With failure awareness:
+- learning accelerates
+- behavior stabilizes
+- catastrophic loops are avoided
+- trust in autonomy increases
+
+This is essential for real-world agents.
+
+---
+
+## Relationship to Other Projects
+
+- **Project 02:** Prevents bad reasoning
+- **Project 03:** Prevents bad planning
+- **Project 04:** Prevents bad strategy choice
+- **Project 05:** Prevents repeated execution mistakes
+
+Together, these form a robust decision-making stack.
+
+---
