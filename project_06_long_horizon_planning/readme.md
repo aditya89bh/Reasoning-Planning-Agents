@@ -63,3 +63,40 @@ A long-lived representation of intent that includes:
 The goal persists across multiple planning cycles.
 
 ---
+
+### 2. Checkpoints
+Explicit milestones that define:
+- expected progress thresholds
+- semantic meaning (not just time-based)
+
+Checkpoints anchor long-term intent and make drift measurable.
+
+---
+
+### 3. Progress Tracking
+The agent updates progress incrementally over time.
+Progress is treated as a continuous signal, not a binary outcome.
+
+This enables nuanced evaluation rather than pass/fail logic.
+
+---
+
+### 4. Drift Detection
+At each checkpoint, the agent evaluates:
+- “Am I where I expected to be by now?”
+
+If actual progress falls outside acceptable bounds,
+the agent detects **drift**.
+
+---
+
+### 5. Replanning Logic
+When drift is detected:
+- the agent reduces confidence in the current plan
+- replanning is triggered intentionally
+- the event is logged in execution history
+
+Replanning is controlled, not reactive.
+
+---
+
