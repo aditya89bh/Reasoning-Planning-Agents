@@ -68,3 +68,38 @@ class LongHorizonPlanner:
 # -----------------------------
 # Demo Runner
 # -----------------------------
+
+goal_state = GoalState(
+    goal="Build and ship a production-ready agent framework"
+)
+
+checkpoints = [
+    Checkpoint("Initial prototype", 0.2),
+    Checkpoint("Core projects complete", 0.5),
+    Checkpoint("Integrated system", 0.75),
+    Checkpoint("Production readiness", 0.95),
+]
+
+planner = LongHorizonPlanner()
+
+print("\n=== LONG-HORIZON EXECUTION ===")
+
+for cp in checkpoints:
+    if not goal_state.active:
+        print("\nGoal abandoned due to low confidence.")
+        break
+
+    planner.update_progress(goal_state)
+    ok = planner.evaluate_progress(goal_state, cp)
+
+    print(f"\nCheckpoint: {cp.description}")
+    print(f"Expected ≥ {cp.expected_progress}, Actual = {round(goal_state.progress,2)}")
+
+    if not ok:
+        print("⚠️ Drift detected → replanning")
+        planner.replan(goal_state)
+    else:
+        print("✅ On track")
+
+print("\n=== FINAL GOAL STATE ===")
+print(json.dumps(goal_state.__dict__, indent=2))
