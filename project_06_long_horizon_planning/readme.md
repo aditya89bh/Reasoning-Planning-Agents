@@ -34,3 +34,32 @@ We:
 This project gives agents those capabilities.
 
 ---
+
+## What This Project Builds
+
+A long-horizon planning layer that enables an agent to:
+
+- maintain persistent goals over time
+- track incremental progress
+- evaluate progress against explicit checkpoints
+- detect drift from expectations
+- trigger deliberate replanning
+- abandon goals when confidence collapses
+
+This is the final step toward **true autonomy**.
+
+---
+
+## Key Components
+
+### 1. Goal State
+A long-lived representation of intent that includes:
+- goal description
+- confidence level
+- progress estimate
+- active or abandoned status
+- execution history
+
+The goal persists across multiple planning cycles.
+
+---
