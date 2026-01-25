@@ -54,3 +54,24 @@ Each failure captures:
 Failures are explicit data, not implicit signals.
 
 ---
+
+### 2. Failure Memory
+A persistent store that:
+- tracks failed actions
+- aggregates failure causes
+- allows fast checks like “has this failed before?”
+
+This enables experience-based avoidance.
+
+---
+
+### 3. Failure Taxonomy
+Failures are categorized into meaningful causes such as:
+- missing credentials
+- environment mismatch
+- incomplete testing
+- unknown failure
+
+This allows different recovery behaviors per failure type.
+
+---
