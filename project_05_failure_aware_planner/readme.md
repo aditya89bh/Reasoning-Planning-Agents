@@ -27,3 +27,30 @@ We say:
 This project gives agents that capability.
 
 ---
+
+## What This Project Builds
+
+A planner that can:
+
+- detect execution failures
+- classify *why* an action failed
+- store failures as first-class memory
+- mutate future plans to avoid known failures
+- inject preventive constraints automatically
+
+The agent learns not just *what worked*,  
+but more importantly, *what should not be repeated*.
+
+---
+
+## Key Components
+
+### 1. Failure Record
+Each failure captures:
+- the action that failed
+- the cause of failure
+- a timestamp
+
+Failures are explicit data, not implicit signals.
+
+---
