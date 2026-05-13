@@ -72,12 +72,12 @@ Goal → Task Decomposition → Planning → Execution → Observation → Refle
 |---|---|---:|---|
 | 01 Task Decomposition Agent | Break goals into structured subtasks | Runnable first prototype | Demo, tests, result examples |
 | 02 Planner-Executor Agent | Convert structured plans into executed step results | Runnable first prototype | Demo, tests, execution examples |
-| 03 Reflection Agent | Analyze failures and revise plans | Design phase | Reflection spec |
+| 03 Reflection Agent | Analyze failures and propose plan revisions | Runnable first prototype | Demo, tests, reflection examples |
 | 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Design phase | Multi-agent planning spec |
 
 ## Current status
 
-This repository has moved from foundation-only scaffold to early runnable prototypes.
+This repository has moved from foundation-only scaffold to three runnable prototypes.
 
 Current state:
 
@@ -90,14 +90,15 @@ Current state:
 7. Project READMEs are added for all four modules.
 8. Project 01 has a runnable task decomposition prototype.
 9. Project 02 has a runnable planner-executor prototype.
+10. Project 03 has a runnable reflection prototype.
 
 Estimated repository status:
 
 ```text
-70-75% complete
+80-85% complete
 ```
 
-This is not yet a finished planning-agent stack. It is now a structured repo with two runnable modules and two planned modules.
+This is not yet a finished planning-agent stack. It is now a structured repo with three runnable modules and one planned module.
 
 ## Repository structure
 
@@ -127,7 +128,12 @@ Reasoning-Planning-Agents/
 │   │   ├── tests/
 │   │   └── results/
 │   ├── 03_reflection_agent/
-│   │   └── README.md
+│   │   ├── README.md
+│   │   ├── run_demo.py
+│   │   ├── src/
+│   │   ├── examples/
+│   │   ├── tests/
+│   │   └── results/
 │   └── 04_multi_agent_planning/
 │       └── README.md
 ├── shared/
@@ -179,6 +185,26 @@ What it demonstrates:
 Plan Spec → Plan Object → Execute Steps → Step Results → Final Status → Evaluation → Trace
 ```
 
+## Project 03: Reflection Agent
+
+Run from the repository root:
+
+```bash
+python projects/03_reflection_agent/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/03_reflection_agent/tests
+```
+
+What it demonstrates:
+
+```text
+Observation → Failure Analysis → Reflection → Revision → Evaluation → Trace
+```
+
 ## How to use this repository
 
 Start with:
@@ -190,8 +216,9 @@ Start with:
 5. `shared/trace_schema.md`
 6. `projects/01_task_decomposition_agent/README.md`
 7. `projects/02_planner_executor_agent/README.md`
+8. `projects/03_reflection_agent/README.md`
 
-Then run the Project 01 and Project 02 demos.
+Then run the Project 01, Project 02, and Project 03 demos.
 
 ## Evaluation criteria
 
@@ -222,9 +249,9 @@ This repository connects to broader work on:
 
 Near-term roadmap:
 
-1. Run Project 01 and Project 02 locally and capture actual output.
-2. Add Project 03 reflection runnable prototype.
-3. Add Project 04 multi-agent planning runnable prototype.
-4. Connect Project 01 decomposition output to Project 02 execution input.
-5. Build an integrated demo across decomposition, planning, execution, and reflection.
+1. Run Project 01, Project 02, and Project 03 locally and capture actual output.
+2. Add Project 04 multi-agent planning runnable prototype.
+3. Connect Project 01 decomposition output to Project 02 execution input.
+4. Connect Project 02 failure outputs to Project 03 reflection input.
+5. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
 6. Add a unified test command and dependency file.
