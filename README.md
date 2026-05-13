@@ -15,6 +15,7 @@ The goal is to move beyond chat-style agents that only respond to prompts. A use
 - track step results
 - reflect on failures
 - revise strategy
+- coordinate specialized roles
 - produce an inspectable trace
 
 This repository treats agents as reasoning systems, not just wrappers around language models.
@@ -23,12 +24,12 @@ This repository treats agents as reasoning systems, not just wrappers around lan
 
 Reasoning agents should not only generate answers.
 
-They should transform goals into plans, execute those plans through explicit steps, evaluate progress, and revise behavior when the plan fails.
+They should transform goals into plans, execute those plans through explicit steps, evaluate progress, revise behavior when the plan fails, and coordinate specialized roles when planning becomes complex.
 
 The working assumption is:
 
 ```text
-A useful agent is a loop: goal → plan → action → observation → reflection → revision.
+A useful agent is a loop: goal → plan → action → observation → reflection → revision → coordination.
 ```
 
 ## Why this matters
@@ -52,7 +53,7 @@ This repository explores agent architectures that are structured, traceable, and
 The intended stack is:
 
 ```text
-Goal → Task Decomposition → Planning → Execution → Observation → Reflection → Revision → Evaluation
+Goal → Task Decomposition → Planning → Execution → Observation → Reflection → Revision → Coordination → Evaluation
 ```
 
 | Layer | Role |
@@ -64,6 +65,7 @@ Goal → Task Decomposition → Planning → Execution → Observation → Refle
 | Observation | Records step result or failure |
 | Reflection | Reviews what worked and failed |
 | Revision | Updates the plan or strategy |
+| Coordination | Merges specialized role outputs into a shared plan |
 | Evaluation | Measures correctness, progress, and trace quality |
 
 ## Project map
@@ -73,11 +75,11 @@ Goal → Task Decomposition → Planning → Execution → Observation → Refle
 | 01 Task Decomposition Agent | Break goals into structured subtasks | Runnable first prototype | Demo, tests, result examples |
 | 02 Planner-Executor Agent | Convert structured plans into executed step results | Runnable first prototype | Demo, tests, execution examples |
 | 03 Reflection Agent | Analyze failures and propose plan revisions | Runnable first prototype | Demo, tests, reflection examples |
-| 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Design phase | Multi-agent planning spec |
+| 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Runnable first prototype | Demo, tests, coordination examples |
 
 ## Current status
 
-This repository has moved from foundation-only scaffold to three runnable prototypes.
+This repository has moved from foundation-only scaffold to four runnable prototypes.
 
 Current state:
 
@@ -91,14 +93,15 @@ Current state:
 8. Project 01 has a runnable task decomposition prototype.
 9. Project 02 has a runnable planner-executor prototype.
 10. Project 03 has a runnable reflection prototype.
+11. Project 04 has a runnable multi-agent planning prototype.
 
 Estimated repository status:
 
 ```text
-80-85% complete
+85-90% complete
 ```
 
-This is not yet a finished planning-agent stack. It is now a structured repo with three runnable modules and one planned module.
+This is not yet a production planning-agent system. It is now a structured repo with four runnable modules and a clear path toward integration.
 
 ## Repository structure
 
@@ -135,7 +138,12 @@ Reasoning-Planning-Agents/
 │   │   ├── tests/
 │   │   └── results/
 │   └── 04_multi_agent_planning/
-│       └── README.md
+│       ├── README.md
+│       ├── run_demo.py
+│       ├── src/
+│       ├── examples/
+│       ├── tests/
+│       └── results/
 ├── shared/
 │   ├── interfaces.md
 │   └── trace_schema.md
@@ -205,6 +213,26 @@ What it demonstrates:
 Observation → Failure Analysis → Reflection → Revision → Evaluation → Trace
 ```
 
+## Project 04: Multi-Agent Planning
+
+Run from the repository root:
+
+```bash
+python projects/04_multi_agent_planning/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/04_multi_agent_planning/tests
+```
+
+What it demonstrates:
+
+```text
+Goal → Roles → Agent Contributions → Conflict Detection → Shared Plan → Evaluation → Trace
+```
+
 ## How to use this repository
 
 Start with:
@@ -217,8 +245,9 @@ Start with:
 6. `projects/01_task_decomposition_agent/README.md`
 7. `projects/02_planner_executor_agent/README.md`
 8. `projects/03_reflection_agent/README.md`
+9. `projects/04_multi_agent_planning/README.md`
 
-Then run the Project 01, Project 02, and Project 03 demos.
+Then run all four project demos.
 
 ## Evaluation criteria
 
@@ -231,6 +260,7 @@ Each project should be evaluated on:
 | Execution order | Can the plan be followed? |
 | Traceability | Can a human inspect the reasoning path? |
 | Failure recovery | Can the system revise after failure? |
+| Coordination quality | Can multiple role outputs become one shared plan? |
 | Modularity | Can components be tested independently? |
 
 ## Related direction
@@ -249,9 +279,9 @@ This repository connects to broader work on:
 
 Near-term roadmap:
 
-1. Run Project 01, Project 02, and Project 03 locally and capture actual output.
-2. Add Project 04 multi-agent planning runnable prototype.
+1. Run all four project demos locally and capture actual output.
+2. Add a unified test command and dependency file.
 3. Connect Project 01 decomposition output to Project 02 execution input.
 4. Connect Project 02 failure outputs to Project 03 reflection input.
-5. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
-6. Add a unified test command and dependency file.
+5. Connect Project 03 revision outputs to Project 04 critic/coordinator roles.
+6. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
