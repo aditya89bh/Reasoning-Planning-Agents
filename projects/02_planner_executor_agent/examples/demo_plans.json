@@ -1,0 +1,155 @@
+[
+  {
+    "plan_id": "plan_publish_blog_v1",
+    "goal_id": "goal_publish_blog",
+    "description": "Execute a publishing workflow for a technical blog post.",
+    "assumptions": [
+      "target_audience_can_be_defined",
+      "article_can_be_written_locally"
+    ],
+    "risks": [
+      "draft_quality_may_need_review"
+    ],
+    "status": "ready",
+    "version": 1,
+    "steps": [
+      {
+        "step_id": "step_define_audience",
+        "description": "Define the target audience for the article.",
+        "expected_output": "audience_defined",
+        "dependencies": []
+      },
+      {
+        "step_id": "step_create_outline",
+        "description": "Create a structured article outline.",
+        "expected_output": "outline_created",
+        "dependencies": [
+          "step_define_audience"
+        ]
+      },
+      {
+        "step_id": "step_write_draft",
+        "description": "Write the first article draft.",
+        "expected_output": "draft_written",
+        "dependencies": [
+          "step_create_outline"
+        ]
+      },
+      {
+        "step_id": "step_review_clarity",
+        "description": "Review the draft for clarity and flow.",
+        "expected_output": "review_completed",
+        "dependencies": [
+          "step_write_draft"
+        ]
+      },
+      {
+        "step_id": "step_publish_article",
+        "description": "Publish the article.",
+        "expected_output": "article_published",
+        "dependencies": [
+          "step_review_clarity"
+        ]
+      }
+    ],
+    "forced_failures": {},
+    "expected_final_status": "complete"
+  },
+  {
+    "plan_id": "plan_publish_blog_missing_audience",
+    "goal_id": "goal_publish_blog_failure_case",
+    "description": "Publishing workflow with a forced audience-definition failure.",
+    "assumptions": [
+      "audience_may_be_unclear"
+    ],
+    "risks": [
+      "drafting_cannot_continue_without_audience"
+    ],
+    "status": "ready",
+    "version": 1,
+    "steps": [
+      {
+        "step_id": "step_define_audience",
+        "description": "Define the target audience for the article.",
+        "expected_output": "audience_defined",
+        "dependencies": []
+      },
+      {
+        "step_id": "step_create_outline",
+        "description": "Create a structured article outline.",
+        "expected_output": "outline_created",
+        "dependencies": [
+          "step_define_audience"
+        ]
+      },
+      {
+        "step_id": "step_write_draft",
+        "description": "Write the first article draft.",
+        "expected_output": "draft_written",
+        "dependencies": [
+          "step_create_outline"
+        ]
+      }
+    ],
+    "forced_failures": {
+      "step_define_audience": "missing_audience"
+    },
+    "expected_final_status": "failed"
+  },
+  {
+    "plan_id": "plan_build_agent_demo_v1",
+    "goal_id": "goal_build_agent_demo",
+    "description": "Execute a software-agent demo build plan.",
+    "assumptions": [
+      "local_python_runtime_available",
+      "pytest_available"
+    ],
+    "risks": [
+      "deployment_step_may_need_environment_setup"
+    ],
+    "status": "ready",
+    "version": 1,
+    "steps": [
+      {
+        "step_id": "step_define_requirements",
+        "description": "Define requirements and scope.",
+        "expected_output": "requirements_defined",
+        "dependencies": []
+      },
+      {
+        "step_id": "step_design_architecture",
+        "description": "Design the agent architecture.",
+        "expected_output": "architecture_defined",
+        "dependencies": [
+          "step_define_requirements"
+        ]
+      },
+      {
+        "step_id": "step_implement_core_logic",
+        "description": "Implement the core planning logic.",
+        "expected_output": "core_logic_implemented",
+        "dependencies": [
+          "step_design_architecture"
+        ]
+      },
+      {
+        "step_id": "step_run_tests",
+        "description": "Run tests for the implementation.",
+        "expected_output": "tests_completed",
+        "dependencies": [
+          "step_implement_core_logic"
+        ]
+      },
+      {
+        "step_id": "step_deploy_project",
+        "description": "Deploy the project demo.",
+        "expected_output": "deployment_completed",
+        "dependencies": [
+          "step_run_tests"
+        ]
+      }
+    ],
+    "forced_failures": {},
+    "expected_final_status": "complete"
+  }
+]
