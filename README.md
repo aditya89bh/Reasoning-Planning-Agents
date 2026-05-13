@@ -94,14 +94,49 @@ Current state:
 9. Project 02 has a runnable planner-executor prototype.
 10. Project 03 has a runnable reflection prototype.
 11. Project 04 has a runnable multi-agent planning prototype.
+12. `requirements.txt` defines the test dependency.
+13. `run_all_tests.sh` runs all project test suites.
+14. `run_all_demos.sh` runs all project demos.
 
 Estimated repository status:
 
 ```text
-85-90% complete
+88-90% complete
 ```
 
-This is not yet a production planning-agent system. It is now a structured repo with four runnable modules and a clear path toward integration.
+This is not yet a production planning-agent system. It is now a structured repo with four runnable modules, unified run commands, and a clear path toward integration.
+
+## Setup
+
+From the repository root:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+## Run all tests
+
+```bash
+bash run_all_tests.sh
+```
+
+Equivalent direct command:
+
+```bash
+python -m pytest \
+  projects/01_task_decomposition_agent/tests \
+  projects/02_planner_executor_agent/tests \
+  projects/03_reflection_agent/tests \
+  projects/04_multi_agent_planning/tests
+```
+
+## Run all demos
+
+```bash
+bash run_all_demos.sh
+```
 
 ## Repository structure
 
@@ -110,6 +145,9 @@ Current structure:
 ```text
 Reasoning-Planning-Agents/
 ├── README.md
+├── requirements.txt
+├── run_all_tests.sh
+├── run_all_demos.sh
 ├── docs/
 │   ├── agent_architecture.md
 │   ├── planning_loop.md
@@ -280,8 +318,8 @@ This repository connects to broader work on:
 Near-term roadmap:
 
 1. Run all four project demos locally and capture actual output.
-2. Add a unified test command and dependency file.
-3. Connect Project 01 decomposition output to Project 02 execution input.
-4. Connect Project 02 failure outputs to Project 03 reflection input.
-5. Connect Project 03 revision outputs to Project 04 critic/coordinator roles.
-6. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
+2. Connect Project 01 decomposition output to Project 02 execution input.
+3. Connect Project 02 failure outputs to Project 03 reflection input.
+4. Connect Project 03 revision outputs to Project 04 critic/coordinator roles.
+5. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
+6. Add captured local outputs to each project result folder.
