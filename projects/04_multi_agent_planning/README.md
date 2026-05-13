@@ -2,12 +2,38 @@
 
 This project explores how multiple specialized agents can coordinate around a shared goal without becoming noisy or chaotic.
 
-The goal is to define roles, assign responsibilities, detect conflicts, create a shared plan, and produce a coordination trace.
+The goal is to define roles, inspect role contributions, detect conflicts, create a shared plan, and produce a coordination trace.
 
 ## Core question
 
 ```text
 Can multiple agents coordinate around a goal while preserving role clarity, plan consistency, and traceability?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- agent role data model
+- agent contribution data model
+- coordination conflict data model
+- shared plan data model
+- deterministic conflict detector
+- deterministic coordinator
+- multi-agent planning evaluator
+- demo roles and contributions
+- command-line demo
+- tests
+- coordination result examples
+
+Estimated project status:
+
+```text
+65-70% complete
 ```
 
 ## Why this matters
@@ -26,36 +52,39 @@ Adding more agents does not automatically improve reasoning. It often creates:
 
 A useful multi-agent planning system needs explicit roles, shared state, conflict detection, and a final coordinated plan.
 
-## Current status
-
-```text
-Design phase
-```
-
-This project does not yet have the runnable implementation. The immediate goal is to define role schema, coordination logic, conflict detection, shared plan output, tests, and result examples.
-
 ## Target loop
 
 ```text
-Goal → Role Assignment → Agent Plans → Conflict Detection → Shared Plan → Coordination Trace → Evaluation
+Goal → Roles → Agent Contributions → Conflict Detection → Shared Plan → Evaluation → Trace
 ```
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| AgentRole model | Defines each agent's responsibility |
-| Role assigner | Maps goal requirements to agent roles |
-| Agent plan model | Stores each agent's proposed plan |
-| Conflict detector | Finds contradictions or duplicate work |
-| Coordinator | Merges agent plans into one shared plan |
-| SharedPlan model | Represents the final coordinated plan |
-| Evaluator | Checks role clarity, conflicts, and plan validity |
-| Trace generator | Shows role assignment, conflicts, and coordination decisions |
+| `src/agent_role.py` | Defines `AgentRole`, `AgentContribution`, `CoordinationConflict`, `SharedPlan`, and `MultiAgentPlanningResult` |
+| `src/conflict_detector.py` | Detects missing required steps, duplicate steps, and role-overlap issues |
+| `src/coordinator.py` | Merges role contributions into a deterministic shared plan |
+| `src/evaluator.py` | Evaluates role clarity, conflict resolution, shared-plan validity, and trace clarity |
+| `examples/demo_roles.json` | Provides deterministic roles and agent contributions |
+| `run_demo.py` | Runs the multi-agent planning demo from the command line |
+| `tests/test_multi_agent_planning.py` | Regression tests for multi-agent planning behavior |
+| `results/coordination_examples.md` | Documents expected coordination behavior |
+
+## Recommended roles
+
+The current prototype uses four roles:
+
+| Role | Responsibility |
+|---|---|
+| Decomposer | Breaks the goal into subtasks |
+| Planner | Orders subtasks into an executable plan |
+| Critic | Detects missing steps, conflicts, or weak dependencies |
+| Coordinator | Merges outputs into a shared plan |
 
 ## Agent role schema
 
-A minimal role should include:
+A minimal role includes:
 
 ```text
 role_id
@@ -71,32 +100,21 @@ Example:
 ```text
 role_id: role_decomposer
 name: Decomposer
-responsibility: Break the goal into subtasks.
+responsibility: Break the goal into clear subtasks.
 inputs:
   - goal
 outputs:
   - subtasks
 constraints:
-  - keep subtasks specific and testable
+  - keep subtasks specific
 ```
 
-## Recommended roles
+## Agent contribution schema
 
-The first prototype should use four roles:
-
-| Role | Responsibility |
-|---|---|
-| Decomposer | Breaks the goal into subtasks |
-| Planner | Orders subtasks into an executable plan |
-| Critic | Detects missing steps, conflicts, or weak dependencies |
-| Coordinator | Merges outputs into a shared plan |
-
-## Agent plan schema
-
-Each agent can produce a local plan or contribution.
+Each role can produce a local contribution.
 
 ```text
-agent_plan_id
+contribution_id
 role_id
 goal_id
 proposed_steps
@@ -108,25 +126,22 @@ confidence
 Example:
 
 ```text
-agent_plan_id: planner_plan_001
+contribution_id: contrib_planner_publish_blog
 role_id: role_planner
 goal_id: goal_publish_blog
 proposed_steps:
-  - define audience
-  - create outline
-  - write draft
-  - review
-  - publish
-assumptions:
-  - goal is article publishing
+  - define_audience
+  - create_outline
+  - write_draft
+  - publish_article
 risks:
-  - audience may be undefined
-confidence: 0.85
+  - publishing may happen before review
+confidence: 0.78
 ```
 
 ## Conflict schema
 
-A conflict captures disagreement or inconsistency between agent outputs.
+A conflict captures disagreement or inconsistency between role outputs.
 
 ```text
 conflict_id
@@ -137,27 +152,25 @@ recommended_resolution
 status
 ```
 
-Conflict types:
+Current conflict types:
 
 ```text
 duplicate_step
-missing_dependency
-contradictory_order
 missing_required_step
 role_overlap
-unresolved_assumption
 ```
 
 Example:
 
 ```text
-conflict_id: conflict_review_missing
-conflict_type: missing_required_step
+conflict_id: conflict_duplicate_define_audience
+conflict_type: duplicate_step
 source_roles:
-  - role_critic
-description: Planner skipped review before publish.
-recommended_resolution: Insert review step before publish.
-status: resolved
+  - role_decomposer
+  - role_planner
+description: Step was proposed by multiple roles: define_audience
+recommended_resolution: deduplicate_step:define_audience
+status: open
 ```
 
 ## Shared plan schema
@@ -177,150 +190,156 @@ status
 Example:
 
 ```text
-shared_plan_id: shared_plan_publish_blog
-roles_used:
-  - decomposer
-  - planner
-  - critic
-  - coordinator
+shared_plan_id: shared_plan_goal_publish_blog
 steps:
-  - define audience
-  - create outline
-  - write draft
-  - review clarity
-  - publish article
+  - define_audience
+  - create_outline
+  - write_draft
+  - review_clarity
+  - publish_article
 resolved_conflicts:
-  - conflict_review_missing
+  - conflict_duplicate_define_audience
 open_conflicts: []
 status: valid
 ```
 
-## Coordination behavior
+## Demo scenario
 
-The first prototype should be deterministic.
+The demo coordinates roles around:
 
-Expected behavior:
+```text
+goal_publish_blog
+```
 
-1. Load a goal.
-2. Assign roles.
-3. Generate role-specific outputs.
-4. Detect conflicts.
-5. Apply coordinator decisions.
-6. Produce shared plan.
-7. Evaluate role clarity and plan validity.
-8. Print trace.
+Required shared-plan steps:
+
+```text
+define_audience
+create_outline
+write_draft
+review_clarity
+publish_article
+```
+
+Expected shared plan:
+
+```text
+1. define_audience
+2. create_outline
+3. write_draft
+4. review_clarity
+5. publish_article
+```
+
+Expected status:
+
+```text
+valid
+```
 
 ## Trace behavior
 
-The trace should show:
+The trace shows:
 
 ```text
 Goal received
 Roles assigned
-Agent plans generated
+Agent contributions received
 Conflicts detected
-Conflicts resolved
+Conflict resolution proposed
 Shared plan created
-Evaluation completed
+Shared plan status
+Coordination completed
 ```
 
 Example trace:
 
 ```text
-Goal received: publish technical blog post
-Roles assigned: decomposer, planner, critic, coordinator
-Planner proposed 4 steps
-Critic detected missing review step
-Coordinator inserted review before publish
+Goal received: goal_publish_blog
+Roles assigned: Decomposer, Planner, Critic, Coordinator
+Agent contributions received: 4
+Conflicts detected: 4
+Conflict detected: duplicate_step -> Step was proposed by multiple roles: define_audience
+Conflict resolution proposed: deduplicate_step:define_audience
+Shared plan created: shared_plan_goal_publish_blog
 Shared plan status: valid
+Coordination completed
 ```
 
 ## Evaluation metrics
 
 | Metric | Meaning |
 |---|---|
-| Role clarity | Does each agent have a distinct responsibility? |
-| Plan contribution quality | Are role outputs useful? |
-| Conflict detection | Were conflicts surfaced? |
-| Conflict resolution | Were conflicts handled correctly? |
-| Shared plan validity | Is the final plan executable? |
+| Role clarity | Are roles distinct and responsible for different outputs? |
+| Contribution count | Did agents produce inspectable contributions? |
+| Conflict count | Were coordination issues surfaced? |
+| Open conflict count | Did unresolved conflicts remain? |
+| Shared plan validity | Does the final plan have steps, valid roles, and correct status? |
 | Trace clarity | Can a human inspect coordination decisions? |
 
-## Planned file structure
+## Run the demo
 
-```text
-projects/04_multi_agent_planning/
-├── README.md
-├── src/
-│   ├── agent_role.py
-│   ├── coordinator.py
-│   ├── conflict_detector.py
-│   └── shared_plan.py
-├── examples/
-│   └── demo_roles.json
-├── tests/
-│   └── test_multi_agent_planning.py
-└── results/
-    └── coordination_examples.md
-```
-
-## Minimum viable demo
-
-The first demo should load a goal and predefined agent roles, then produce:
-
-- role assignments
-- agent contributions
-- detected conflicts
-- resolved conflicts
-- shared plan
-- evaluation result
-- trace
-
-Run command target:
+From the repository root:
 
 ```bash
 python projects/04_multi_agent_planning/run_demo.py
 ```
 
-Test command target:
+The demo prints:
+
+- goal id
+- roles
+- contributions
+- detected conflicts
+- shared plan
+- evaluation result
+- trace
+- summary
+
+## Run tests
+
+From the repository root:
 
 ```bash
 python -m pytest projects/04_multi_agent_planning/tests
 ```
 
+## What this prototype proves
+
+This project proves the fourth layer of the planning-agent stack:
+
+```text
+role outputs → conflict detection → deterministic coordination → shared plan → trace
+```
+
+That is the coordination layer needed before building a full integrated agent loop.
+
 ## Current limitations
 
-- No runnable implementation yet.
-- No LLM agent roles yet.
-- No real agent communication yet.
-- No dynamic role assignment yet.
-- No tool execution yet.
-- No integration with Projects 01-03 yet.
+- Agent roles are deterministic, not live LLM agents.
+- Contributions are loaded from JSON.
+- Conflict resolution is simple and rule-based.
+- Duplicate conflicts are treated as resolved automatically.
+- No actual agent conversation yet.
+- No direct integration with Projects 01-03 yet.
 
 ## Next steps
 
-1. Add `src/agent_role.py`.
-2. Add `src/shared_plan.py`.
-3. Add `src/conflict_detector.py`.
-4. Add `src/coordinator.py`.
-5. Add demo roles.
-6. Add runnable demo.
-7. Add tests.
-8. Add result examples.
-9. Update this README to runnable prototype status.
+1. Run the demo locally and capture actual output.
+2. Build an integrated demo across Projects 01-04.
+3. Connect Project 03 revision outputs to Project 04 critic/coordinator roles.
+4. Add richer conflict types.
+5. Add unresolved-conflict cases.
+6. Update top-level README with Project 04 runnable status.
 
 ## Completion target
 
-This project reaches first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- role schema
-- deterministic role assignment
-- local agent plan outputs
-- conflict detection
-- conflict resolution
-- shared plan output
-- trace output
-- tests
-- result artifact
+- local demo output captured in results
+- direct integration with Projects 01-03
+- richer conflict detection
+- unresolved-conflict examples
+- integrated demo participation
 
-At that point, Project 04 becomes the coordination layer of the planning-agent stack.
+At that point, Project 04 becomes a stronger coordination layer for the planning-agent stack.
