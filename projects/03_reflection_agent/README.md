@@ -2,12 +2,37 @@
 
 This project adds failure analysis, reflection, and plan revision to the reasoning-planning stack.
 
-The goal is to build an agent that can inspect failed or blocked execution steps, identify likely causes, propose useful revisions, and generate a trace explaining what changed.
+The goal is to inspect failed or blocked execution steps, identify likely causes, propose useful revisions, and generate a trace explaining what changed.
 
 ## Core question
 
 ```text
 Can an agent reflect on execution failure and revise the plan in a useful way?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- observation data model
+- reflection data model
+- revision data model
+- deterministic failure analyzer
+- deterministic plan reviser
+- reflection evaluator
+- failure-case examples
+- command-line demo
+- tests
+- reflection result examples
+
+Estimated project status:
+
+```text
+65-70% complete
 ```
 
 ## Why this matters
@@ -23,36 +48,30 @@ A useful agent should not just stop when a step fails. It should be able to:
 - update the plan
 - explain the change
 
-Reflection turns execution failure into learning and correction.
-
-## Current status
-
-```text
-Design phase
-```
-
-This project does not yet have the runnable implementation. The immediate goal is to define failure cases, reflection schema, revision logic, tests, and result examples.
+Reflection turns execution failure into correction.
 
 ## Target loop
 
 ```text
-Failed Step → Observation → Failure Analysis → Reflection → Revised Plan → Evaluation
+Observation → Failure Analysis → Reflection → Revision → Evaluation → Trace
 ```
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Observation model | Records what happened during execution |
-| Failure analyzer | Identifies the likely cause of failure |
-| Reflection model | Stores analysis and recommended change |
-| Reviser | Applies reflection to create a revised plan |
-| Evaluator | Checks whether revision is useful |
-| Trace generator | Shows failure, cause, revision, and outcome |
+| `src/reflection.py` | Defines `Observation`, `Reflection`, `Revision`, and `ReflectionResult` |
+| `src/failure_analyzer.py` | Maps observed errors to likely causes and recommended revisions |
+| `src/reviser.py` | Converts recommended revisions into concrete `Revision` objects |
+| `src/evaluator.py` | Evaluates reflection specificity, revision usefulness, and trace clarity |
+| `examples/failure_cases.json` | Provides deterministic failure observations |
+| `run_demo.py` | Runs the reflection demo from the command line |
+| `tests/test_reflection.py` | Regression tests for reflection behavior |
+| `results/reflection_examples.md` | Documents expected reflection and revision behavior |
 
 ## Observation schema
 
-A minimal observation should include:
+A minimal observation includes:
 
 ```text
 observation_id
@@ -68,16 +87,16 @@ Example:
 
 ```text
 observation_id: obs_missing_audience
-step_id: step_write_draft
+step_id: step_define_audience
 status: failure
-observed_error: target_audience_missing
+observed_error: missing_audience
 state_change: draft_blocked
-notes: Draft could not proceed because target audience was undefined.
+notes: The article workflow cannot proceed because the target audience was not defined.
 ```
 
 ## Reflection schema
 
-A reflection should include:
+A reflection includes:
 
 ```text
 reflection_id
@@ -92,18 +111,18 @@ confidence
 Example:
 
 ```text
-reflection_id: reflection_missing_audience
+reflection_id: reflection_obs_missing_audience
 observation_id: obs_missing_audience
-observed_issue: draft step failed
-likely_cause: target audience was undefined
-impact: article tone and depth cannot be selected
-recommended_revision: add audience definition step before drafting
+observed_issue: Audience definition step failed.
+likely_cause: The goal does not contain enough audience context.
+impact: Drafting and review quality will be unstable without a target reader.
+recommended_revision: add_audience_definition_step
 confidence: 0.9
 ```
 
 ## Revision schema
 
-A revision modifies the plan.
+A revision modifies or blocks a plan.
 
 ```text
 revision_id
@@ -115,7 +134,7 @@ change_summary
 status
 ```
 
-Revision types:
+Supported revision types:
 
 ```text
 add_step
@@ -125,139 +144,127 @@ replace_step
 mark_blocked
 ```
 
-Example:
+## Demo failure cases
 
-```text
-revision_id: rev_add_audience_step
-reflection_id: reflection_missing_audience
-revision_type: add_step
-old_plan_id: plan_publish_blog_v1
-new_plan_id: plan_publish_blog_v2
-change_summary: Added audience definition before outline and draft.
-status: applied
-```
+| Case | Observed error | Expected revision |
+|---|---|---|
+| `case_missing_audience` | `missing_audience` | `add_audience_definition_step` |
+| `case_outline_missing` | `outline_missing` | `add_or_reorder_outline_step` |
+| `case_review_skipped` | `review_skipped` | `add_review_before_publish` |
+| `case_tool_unavailable` | `tool_unavailable` | `mark_step_blocked` |
+| `case_blocked_dependency` | `blocked_dependency` | `reorder_plan_dependencies` |
 
 ## Reflection behavior
 
-The first prototype should use deterministic mappings from failure type to revision.
+The current prototype uses deterministic mappings from failure type to revision.
 
 Examples:
 
-| Failure | Likely cause | Revision |
+| Failure | Likely cause | Revision type |
 |---|---|---|
-| `target_audience_missing` | Goal lacks audience context | Add audience definition step |
-| `outline_missing` | Draft attempted before outline | Add or reorder outline step before drafting |
-| `review_skipped` | Publish attempted without review | Add review step before publish |
-| `tool_unavailable` | Execution tool cannot run | Mark step blocked |
-| `dependency_missing` | Prerequisite not completed | Reorder plan |
+| `missing_audience` | Goal lacks audience context | `add_step` |
+| `outline_missing` | Draft attempted before outline | `add_step` |
+| `review_skipped` | Publish attempted without review | `add_step` |
+| `tool_unavailable` | Required tool unavailable | `mark_blocked` |
+| `blocked_dependency` | Prerequisite missing | `reorder_step` |
+
+Unknown failures are routed to manual review.
 
 ## Trace behavior
 
-The trace should show:
+The trace shows:
 
 ```text
 Failure observed
-Likely cause identified
+Observed error
+Cause identified
 Reflection generated
 Revision proposed
-Revised plan created
-Evaluation completed
+Case completed
 ```
 
 Example trace:
 
 ```text
-Failure observed: step_write_draft failed
-Observed error: target_audience_missing
-Likely cause: audience was not defined
-Recommended revision: add audience definition step
-Revision applied: plan_publish_blog_v2 created
-Evaluation: revised plan valid
+Failure observed: step_define_audience status=failure
+Observed error: missing_audience
+Cause identified: The goal does not contain enough audience context.
+Reflection generated: add_audience_definition_step
+Revision proposed: add_step -> Add an audience-definition step before outline or drafting.
+Case completed: case_missing_audience
 ```
 
 ## Evaluation metrics
 
 | Metric | Meaning |
 |---|---|
-| Failure detection | Was the failure surfaced clearly? |
-| Cause specificity | Was the likely cause concrete? |
+| Failure detection | Was the observation marked as failure or blocked? |
+| Cause specificity | Did the system identify a concrete likely cause? |
 | Reflection quality | Was the reflection actionable? |
-| Revision usefulness | Did the revision address the failure? |
-| Revised plan validity | Is the new plan executable? |
-| Trace clarity | Can the failure-to-revision path be inspected? |
+| Revision usefulness | Did the proposed revision address the failure? |
+| Trace clarity | Can a human inspect failure-to-revision behavior? |
 
-## Planned file structure
+## Run the demo
 
-```text
-projects/03_reflection_agent/
-├── README.md
-├── src/
-│   ├── reflection.py
-│   ├── failure_analyzer.py
-│   ├── reviser.py
-│   └── evaluator.py
-├── examples/
-│   └── failure_cases.json
-├── tests/
-│   └── test_reflection.py
-└── results/
-    └── reflection_examples.md
-```
-
-## Minimum viable demo
-
-The first demo should load failure cases and produce:
-
-- failure analysis
-- reflection note
-- recommended revision
-- revised plan summary
-- evaluation result
-- trace
-
-Run command target:
+From the repository root:
 
 ```bash
 python projects/03_reflection_agent/run_demo.py
 ```
 
-Test command target:
+The demo prints:
+
+- failure case id
+- observation details
+- reflection object
+- revision object
+- evaluation result
+- trace
+- summary metrics
+
+## Run tests
+
+From the repository root:
 
 ```bash
 python -m pytest projects/03_reflection_agent/tests
 ```
 
+## What this prototype proves
+
+This project proves the third layer of the planning-agent stack:
+
+```text
+execution failure → specific reflection → proposed plan revision → trace
+```
+
+That is required before building multi-agent coordination in Project 04.
+
 ## Current limitations
 
-- No runnable implementation yet.
-- No learned reflection yet.
+- Reflection is deterministic and pattern-based.
+- Revisions are proposed as objects but do not yet mutate full plans.
 - No LLM-based critique yet.
-- No live planner-executor integration yet.
-- No multi-agent critic yet.
+- No learned reflection loop yet.
+- No direct Project 02 execution-result ingestion yet.
+- Unknown failures route to manual review.
 
 ## Next steps
 
-1. Add `src/reflection.py`.
-2. Add `src/failure_analyzer.py`.
-3. Add `src/reviser.py`.
-4. Add `src/evaluator.py`.
-5. Add demo failure cases.
-6. Add runnable demo.
-7. Add tests.
-8. Add result examples.
-9. Update this README to runnable prototype status.
+1. Run the demo locally and capture actual output.
+2. Connect Project 02 failed step results to Project 03 observations.
+3. Add revised-plan mutation.
+4. Add richer failure cases.
+5. Add Project 04 multi-agent planning.
+6. Update top-level README with Project 03 runnable status.
 
 ## Completion target
 
-This project reaches first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- structured failure cases
-- deterministic failure analysis
-- reflection generation
-- revised plan output
-- evaluation
-- trace output
-- tests
-- result artifact
+- local demo output captured in results
+- direct Project 02 failure ingestion
+- actual plan mutation from revisions
+- integration with Project 04 critic/coordinator roles
 
-At that point, Project 03 becomes the recovery layer of the planning-agent stack.
+At that point, Project 03 becomes a stronger recovery layer of the planning-agent stack.
