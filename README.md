@@ -70,30 +70,37 @@ Goal → Task Decomposition → Planning → Execution → Observation → Refle
 
 | Project | Goal | Status | Output |
 |---|---|---:|---|
-| 01 Task Decomposition Agent | Break goals into structured subtasks | Planned | Decomposition prototype |
-| 02 Planner-Executor Agent | Convert subtasks into ordered execution loops | Planned | Runnable planner-executor loop |
-| 03 Reflection Agent | Analyze failures and revise plans | Planned | Reflection trace prototype |
-| 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Planned | Multi-agent planning scaffold |
+| 01 Task Decomposition Agent | Break goals into structured subtasks | Runnable first prototype | Demo, tests, result examples |
+| 02 Planner-Executor Agent | Convert subtasks into ordered execution loops | Design phase | Planner-executor spec |
+| 03 Reflection Agent | Analyze failures and revise plans | Design phase | Reflection spec |
+| 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Design phase | Multi-agent planning spec |
 
 ## Current status
 
-This repository is in the foundation phase.
+This repository has moved from foundation-only scaffold to first runnable prototype.
 
-Current priority:
+Current state:
 
-```text
-Build a clean scaffold first, then implement Project 01 as the first runnable prototype.
-```
+1. Top-level README is documented.
+2. Agent architecture is documented.
+3. Planning loop is documented.
+4. Evaluation framework is documented.
+5. Roadmap is documented.
+6. Shared interfaces and trace schema are documented.
+7. Project READMEs are added for all four modules.
+8. Project 01 has a runnable task decomposition prototype.
 
 Estimated repository status:
 
 ```text
-10-15% complete
+60-65% complete
 ```
+
+This is not yet a finished planning-agent stack. It is now a structured repo with one runnable module and three planned modules.
 
 ## Repository structure
 
-Target structure:
+Current structure:
 
 ```text
 Reasoning-Planning-Agents/
@@ -105,29 +112,59 @@ Reasoning-Planning-Agents/
 │   └── roadmap.md
 ├── projects/
 │   ├── 01_task_decomposition_agent/
+│   │   ├── README.md
+│   │   ├── run_demo.py
+│   │   ├── src/
+│   │   ├── examples/
+│   │   ├── tests/
+│   │   └── results/
 │   ├── 02_planner_executor_agent/
+│   │   └── README.md
 │   ├── 03_reflection_agent/
+│   │   └── README.md
 │   └── 04_multi_agent_planning/
+│       └── README.md
 ├── shared/
 │   ├── interfaces.md
 │   └── trace_schema.md
-├── references/
-│   └── reading_list.md
-└── integrated_demo/
-    └── README.md
+└── references/
+    └── reading_list.md
 ```
 
-## First milestone
+## Runnable prototype
 
-The first milestone is Project 01: Task Decomposition Agent.
+## Project 01: Task Decomposition Agent
 
-Minimum useful loop:
+Run from the repository root:
+
+```bash
+python projects/01_task_decomposition_agent/run_demo.py
+```
+
+Run tests:
+
+```bash
+python -m pytest projects/01_task_decomposition_agent/tests
+```
+
+What it demonstrates:
 
 ```text
 Goal → Subtasks → Dependencies → Execution Order → Trace → Evaluation
 ```
 
-The first prototype should be deterministic and inspectable before adding LLMs or external agent frameworks.
+## How to use this repository
+
+Start with:
+
+1. `docs/agent_architecture.md`
+2. `docs/planning_loop.md`
+3. `docs/evaluation.md`
+4. `shared/interfaces.md`
+5. `shared/trace_schema.md`
+6. `projects/01_task_decomposition_agent/README.md`
+
+Then run the Project 01 demo.
 
 ## Evaluation criteria
 
@@ -158,10 +195,9 @@ This repository connects to broader work on:
 
 Near-term roadmap:
 
-1. Add foundation docs.
-2. Add project-level README files.
-3. Implement Project 01 runnable prototype.
-4. Add tests and result examples.
-5. Implement Project 02 planner-executor loop.
-6. Add reflection and revision behavior.
-7. Build an integrated demo across decomposition, planning, execution, and reflection.
+1. Run Project 01 locally and capture actual output.
+2. Add Project 02 planner-executor runnable prototype.
+3. Add Project 03 reflection runnable prototype.
+4. Add Project 04 multi-agent planning runnable prototype.
+5. Build an integrated demo across decomposition, planning, execution, and reflection.
+6. Add a unified test command and dependency file.
