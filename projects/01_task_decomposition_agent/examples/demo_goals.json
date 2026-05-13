@@ -1,0 +1,58 @@
+[
+  {
+    "goal_id": "goal_publish_blog",
+    "description": "Publish a technical blog post about planning agents for AI builders.",
+    "success_criteria": [
+      "audience_defined",
+      "outline_created",
+      "draft_written",
+      "review_completed",
+      "article_published"
+    ],
+    "constraints": [
+      "technical_but_readable",
+      "under_1200_words"
+    ],
+    "context": {
+      "audience": "AI builders",
+      "format": "blog post"
+    }
+  },
+  {
+    "goal_id": "goal_build_agent_demo",
+    "description": "Build and deploy a small software agent demo for task planning.",
+    "success_criteria": [
+      "requirements_defined",
+      "architecture_defined",
+      "core_logic_implemented",
+      "tests_completed",
+      "deployment_completed"
+    ],
+    "constraints": [
+      "deterministic_first",
+      "no_external_llm_required"
+    ],
+    "context": {
+      "audience": "technical reviewers",
+      "runtime": "local python"
+    }
+  },
+  {
+    "goal_id": "goal_prepare_workshop",
+    "description": "Prepare a workshop on reasoning and planning agents.",
+    "success_criteria": [
+      "goal_analyzed",
+      "execution_plan_created",
+      "work_completed",
+      "results_reviewed"
+    ],
+    "constraints": [
+      "clear_examples",
+      "beginner_friendly"
+    ],
+    "context": {
+      "audience": "students and builders",
+      "format": "workshop"
+    }
+  }
+]
