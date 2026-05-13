@@ -2,12 +2,38 @@
 
 This project extends task decomposition into an executable planning loop.
 
-The goal is to convert subtasks into an ordered plan, simulate execution step by step, record step results, and produce an inspectable execution trace.
+The goal is to convert structured plan specs into ordered plans, simulate execution step by step, record step results, and produce an inspectable execution trace.
 
 ## Core question
 
 ```text
 Can an agent turn subtasks into an executable plan and track what happened during execution?
+```
+
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- plan data model
+- plan step data model
+- step result data model
+- execution result data model
+- deterministic planner
+- simulated executor
+- execution evaluator
+- demo plans
+- command-line demo
+- tests
+- execution result examples
+
+Estimated project status:
+
+```text
+65-70% complete
 ```
 
 ## Why this matters
@@ -24,41 +50,34 @@ Many agent systems generate plausible plans but fail to track:
 
 The planner-executor loop gives the agent operational structure.
 
-## Current status
-
-```text
-Design phase
-```
-
-This project does not yet have the runnable implementation. The immediate goal is to define the plan schema, execution result schema, demo plans, tests, and result examples.
-
 ## Target loop
 
 ```text
-Goal → Subtasks → Plan → Execute Steps → Step Results → Final Trace → Evaluation
+Plan Spec → Plan Object → Execute Steps → Step Results → Final Status → Evaluation → Trace
 ```
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Plan model | Stores ordered execution structure |
-| PlanStep model | Represents one executable step |
-| Planner | Converts subtasks into an ordered plan |
-| Executor | Simulates or performs each plan step |
-| StepResult model | Records success, failure, output, and error |
-| Evaluator | Checks plan validity and execution result |
-| Trace generator | Shows the full plan-execution path |
+| `src/plan.py` | Defines `Plan`, `PlanStep`, `StepResult`, and `ExecutionResult` |
+| `src/planner.py` | Builds plan objects from structured specs and validates structure |
+| `src/executor.py` | Simulates plan execution, dependency checks, failures, and final status |
+| `src/evaluator.py` | Evaluates plan validity, execution results, and trace clarity |
+| `examples/demo_plans.json` | Provides successful and failure-case demo plans |
+| `run_demo.py` | Runs the planner-executor demo from the command line |
+| `tests/test_planner_executor.py` | Regression tests for planner-executor behavior |
+| `results/execution_examples.md` | Documents expected execution behavior |
 
 ## Plan schema
 
-A minimal plan should include:
+A minimal plan includes:
 
 ```text
 plan_id
 goal_id
+description
 steps
-dependencies
 assumptions
 risks
 status
@@ -82,14 +101,14 @@ version: 1
 
 ## PlanStep schema
 
-A minimal plan step should include:
+A minimal plan step includes:
 
 ```text
 step_id
 plan_id
-subtask_id
 description
 expected_output
+dependencies
 status
 ```
 
@@ -98,9 +117,10 @@ Example:
 ```text
 step_id: step_create_outline
 plan_id: plan_publish_blog_v1
-subtask_id: subtask_create_outline
 description: Create a structured article outline.
 expected_output: outline_created
+dependencies:
+  - step_define_audience
 status: pending
 ```
 
@@ -120,19 +140,29 @@ notes
 Example:
 
 ```text
-result_id: result_create_outline
+result_id: result_step_create_outline
 step_id: step_create_outline
 status: success
 output: outline_created
 error: none
-notes: Outline contains introduction, argument, examples, and conclusion.
+notes: Step completed successfully.
 ```
+
+## Demo scenarios
+
+The current demo includes:
+
+| Plan | Scenario | Expected final status |
+|---|---|---|
+| `plan_publish_blog_v1` | Successful publishing workflow | `complete` |
+| `plan_publish_blog_missing_audience` | Forced failure on audience definition | `failed` |
+| `plan_build_agent_demo_v1` | Successful software-agent demo workflow | `complete` |
 
 ## Execution behavior
 
-The first prototype should use simulated execution.
+The prototype uses simulated execution.
 
-Example:
+Success example:
 
 ```text
 step_define_audience → success → audience_defined
@@ -142,120 +172,109 @@ step_review_clarity → success → review_completed
 step_publish_article → success → article_published
 ```
 
-Failure examples should also be supported:
+Failure example:
 
 ```text
-step_write_draft → failure → missing_audience
+step_define_audience → failure → missing_audience
+step_create_outline → blocked → missing dependency
+step_write_draft → blocked → missing dependency
 ```
 
 ## Trace behavior
 
-The trace should show:
+The execution trace shows:
 
 ```text
-Plan created
-Step 1 executed
-Step 2 executed
-Step 3 failed or succeeded
-Final plan status computed
-Evaluation completed
+Execution started
+Step executed / failed / blocked
+Final status computed
+Execution completed
 ```
 
 Example trace:
 
 ```text
-Plan created: plan_publish_blog_v1
-Step executed: step_define_audience → success
-Step executed: step_create_outline → success
-Step executed: step_write_draft → success
-Step executed: step_review_clarity → success
-Step executed: step_publish_article → success
+Execution started: plan_publish_blog_v1
+Step executed: step_define_audience -> success -> audience_defined
+Step executed: step_create_outline -> success -> outline_created
 Final status: complete
+Execution completed
 ```
 
 ## Evaluation metrics
 
 | Metric | Meaning |
 |---|---|
-| Plan validity | Is the plan executable? |
+| Plan validity | Does the plan have valid structure and dependencies? |
 | Step count | Number of plan steps |
-| Step success rate | Ratio of successful steps |
-| Failure visibility | Are failed steps explicit? |
+| Successful steps | Number of successful steps |
+| Failed steps | Number of explicit failures |
+| Blocked steps | Number of dependency-blocked steps |
 | Final status correctness | Is the plan status computed correctly? |
 | Trace clarity | Can a human inspect the execution path? |
 
-## Planned file structure
+## Run the demo
 
-```text
-projects/02_planner_executor_agent/
-├── README.md
-├── src/
-│   ├── plan.py
-│   ├── planner.py
-│   ├── executor.py
-│   └── evaluator.py
-├── examples/
-│   └── demo_plans.json
-├── tests/
-│   └── test_planner_executor.py
-└── results/
-    └── execution_examples.md
-```
-
-## Minimum viable demo
-
-The first demo should load a few structured plans and produce:
-
-- ordered plan
-- simulated step execution
-- step results
-- final plan status
-- evaluation result
-- trace
-
-Run command target:
+From the repository root:
 
 ```bash
 python projects/02_planner_executor_agent/run_demo.py
 ```
 
-Test command target:
+The demo prints:
+
+- plan id
+- goal id
+- plan steps
+- step results
+- planning trace
+- execution trace
+- evaluation result
+- final summary
+
+## Run tests
+
+From the repository root:
 
 ```bash
 python -m pytest projects/02_planner_executor_agent/tests
 ```
 
+## What this prototype proves
+
+This project proves the second layer of the planning-agent stack:
+
+```text
+structured plan → deterministic execution → visible step results → final status → trace
+```
+
+That is required before adding reflection and revision in Project 03.
+
 ## Current limitations
 
-- No runnable implementation yet.
-- No real tool execution yet.
+- Execution is simulated.
+- No real tool calls yet.
 - No external APIs yet.
+- No dynamic replanning yet.
 - No reflection or revision yet.
-- No multi-agent coordination yet.
+- Plans are loaded from structured JSON instead of generated from Project 01 output.
 
 ## Next steps
 
-1. Add `src/plan.py`.
-2. Add `src/planner.py`.
-3. Add `src/executor.py`.
-4. Add `src/evaluator.py`.
-5. Add demo plans.
-6. Add runnable demo.
-7. Add tests.
-8. Add result examples.
-9. Update this README to runnable prototype status.
+1. Run the demo locally and capture actual output.
+2. Connect Project 01 decomposition output to Project 02 planning input.
+3. Add more failure cases.
+4. Add partial execution examples.
+5. Add Project 03 reflection integration.
+6. Update top-level README with Project 02 runnable status.
 
 ## Completion target
 
-This project reaches first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- plan model
-- planner
-- simulated executor
-- step result tracking
-- final status computation
-- trace output
-- tests
-- result artifact
+- local demo output captured in results
+- connection to Project 01 output
+- richer failure and blocked-step examples
+- integration with Project 03 reflection
 
-At that point, Project 02 becomes the execution layer of the planning-agent stack.
+At that point, Project 02 becomes a stronger execution layer of the planning-agent stack.
