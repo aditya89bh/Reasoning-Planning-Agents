@@ -10,6 +10,30 @@ The goal is to convert a high-level goal into structured subtasks, dependencies,
 Can an agent convert a goal into useful subtasks and a valid execution order?
 ```
 
+## Current status
+
+```text
+Runnable first prototype
+```
+
+This project now includes:
+
+- goal data model
+- subtask data model
+- dependency data model
+- deterministic decomposer
+- decomposition evaluator
+- demo goals
+- command-line demo
+- tests
+- decomposition result examples
+
+Estimated project status:
+
+```text
+65-70% complete
+```
+
 ## Why this matters
 
 Planning fails when decomposition is weak.
@@ -23,14 +47,6 @@ If an agent cannot break a goal into clear subtasks, every later stage becomes u
 
 Task decomposition is the first layer of a useful planning agent.
 
-## Current status
-
-```text
-Design phase
-```
-
-This project does not yet have the runnable implementation. The immediate goal is to define the schema, demo inputs, decomposition logic, tests, and result examples.
-
 ## Target loop
 
 ```text
@@ -39,18 +55,19 @@ Goal → Subtasks → Dependencies → Execution Order → Trace → Evaluation
 
 ## Components
 
-| Component | Role |
+| File | Role |
 |---|---|
-| Goal model | Defines the desired outcome |
-| Subtask model | Represents one decomposed unit of work |
-| Dependency model | Captures prerequisite relationships |
-| Decomposer | Converts goal templates into subtasks |
-| Evaluator | Checks decomposition quality and execution order |
-| Trace generator | Shows how the decomposition was created |
+| `src/task.py` | Defines `Goal`, `Subtask`, `Dependency`, and `DecompositionResult` |
+| `src/decomposer.py` | Converts goals into subtasks, dependencies, execution order, and trace |
+| `src/evaluator.py` | Evaluates goal clarity, dependency validity, execution order, and trace clarity |
+| `examples/demo_goals.json` | Provides structured demo goals |
+| `run_demo.py` | Runs the decomposition demo from the command line |
+| `tests/test_decomposition.py` | Regression tests for decomposition behavior |
+| `results/decomposition_examples.md` | Documents expected output behavior |
 
 ## Goal schema
 
-A minimal goal should include:
+A minimal goal includes:
 
 ```text
 goal_id
@@ -77,83 +94,48 @@ context:
   audience: AI builders
 ```
 
-## Subtask schema
-
-A minimal subtask should include:
-
-```text
-subtask_id
-goal_id
-description
-expected_output
-dependencies
-status
-```
-
-Example:
-
-```text
-subtask_id: subtask_create_outline
-goal_id: goal_publish_blog
-description: Create a structured outline for the article.
-expected_output: outline_created
-dependencies:
-  - subtask_define_audience
-status: pending
-```
-
-## Dependency schema
-
-A dependency defines ordering between subtasks.
-
-```text
-dependency_id
-before_subtask_id
-after_subtask_id
-reason
-```
-
-Example:
-
-```text
-dependency_id: dep_outline_before_draft
-before_subtask_id: subtask_create_outline
-after_subtask_id: subtask_write_draft
-reason: Drafting requires an outline first.
-```
-
 ## Decomposition behavior
 
-The first prototype should use deterministic templates.
+The first prototype uses deterministic templates.
 
-Example goal:
+Current goal types:
+
+| Goal type | Trigger examples | Template output |
+|---|---|---|
+| `publishing` | article, blog, publish, writing, newsletter | audience, outline, draft, review, publish |
+| `software_project` | software, system, application, agent, platform, deploy | requirements, architecture, implementation, tests, deployment |
+| `generic` | fallback | analyze, plan, execute, review |
+
+## Example: publishing goal
+
+Input goal:
 
 ```text
-Publish a technical blog post about planning agents.
+Publish a technical blog post about planning agents for AI builders.
 ```
 
 Expected subtasks:
 
 ```text
-1. Define target audience
-2. Create outline
-3. Write draft
-4. Review clarity
-5. Publish article
+1. subtask_define_audience
+2. subtask_create_outline
+3. subtask_write_draft
+4. subtask_review_clarity
+5. subtask_publish_article
 ```
 
 Expected dependencies:
 
 ```text
-define audience → create outline
-create outline → write draft
-write draft → review clarity
-review clarity → publish article
+subtask_define_audience → subtask_create_outline
+subtask_create_outline → subtask_write_draft
+subtask_write_draft → subtask_review_clarity
+subtask_review_clarity → subtask_publish_article
 ```
 
 ## Trace behavior
 
-The trace should show:
+The trace shows:
 
 ```text
 Goal received
@@ -161,18 +143,18 @@ Goal classified
 Subtasks generated
 Dependencies created
 Execution order created
-Evaluation completed
+Decomposition completed
 ```
 
 Example trace:
 
 ```text
 Goal received: publish technical blog post
-Goal type: publishing
+Goal classified as: publishing
 Generated 5 subtasks
 Generated 4 dependencies
-Execution order valid: true
-Trace clarity: high
+Execution order created
+Decomposition completed
 ```
 
 ## Evaluation metrics
@@ -181,80 +163,73 @@ Trace clarity: high
 |---|---|
 | Goal clarity | Is the goal specific enough to decompose? |
 | Subtask count | Number of generated subtasks |
-| Required subtask coverage | Were necessary steps included? |
 | Dependency validity | Are prerequisite relationships valid? |
 | Execution order validity | Can subtasks be executed in order? |
 | Trace clarity | Is the decomposition process inspectable? |
 
-## Planned file structure
+## Run the demo
 
-```text
-projects/01_task_decomposition_agent/
-├── README.md
-├── src/
-│   ├── task.py
-│   ├── decomposer.py
-│   └── evaluator.py
-├── examples/
-│   └── demo_goals.json
-├── tests/
-│   └── test_decomposition.py
-└── results/
-    └── decomposition_examples.md
-```
-
-## Minimum viable demo
-
-The first demo should load a few structured goals and produce:
-
-- subtasks
-- dependencies
-- execution order
-- evaluation result
-- trace
-
-Run command target:
+From the repository root:
 
 ```bash
 python projects/01_task_decomposition_agent/run_demo.py
 ```
 
-Test command target:
+The demo prints:
+
+- goal id
+- goal type
+- subtasks
+- dependencies
+- execution order
+- evaluation result
+- trace
+- summary
+
+## Run tests
+
+From the repository root:
 
 ```bash
 python -m pytest projects/01_task_decomposition_agent/tests
 ```
 
+## What this prototype proves
+
+This project proves the first layer of the planning-agent stack:
+
+```text
+high-level goal → structured subtasks → valid execution order → inspectable trace
+```
+
+That is the foundation required before planner-executor, reflection, and multi-agent coordination layers.
+
 ## Current limitations
 
-- No runnable implementation yet.
+- Goal classification is keyword-based.
+- Decomposition is template-based.
 - No LLM integration yet.
 - No open-ended goal parsing yet.
 - No execution layer yet.
 - No reflection or revision yet.
+- Dependencies are linear for the first prototype.
 
 ## Next steps
 
-1. Add `src/task.py`.
-2. Add `src/decomposer.py`.
-3. Add `src/evaluator.py`.
-4. Add demo goals.
-5. Add runnable demo.
-6. Add tests.
-7. Add result examples.
-8. Update this README to runnable prototype status.
+1. Run the demo locally and capture actual output.
+2. Add more goal templates.
+3. Add ambiguous-goal handling.
+4. Add non-linear dependencies.
+5. Connect this output to Project 02 planner-executor.
+6. Update top-level README with Project 01 runnable status.
 
 ## Completion target
 
-This project reaches first milestone when it has:
+This project reaches a stronger milestone when it has:
 
-- structured goal model
-- deterministic decomposition
-- dependency generation
-- execution order generation
-- evaluation
-- trace output
-- tests
-- result artifact
+- more goal templates
+- local demo output captured in results
+- non-linear dependency examples
+- connection to Project 02
 
-At that point, Project 01 becomes the foundation layer for the planning-agent stack.
+At that point, Project 01 becomes a stronger decomposition layer for the planning-agent stack.
