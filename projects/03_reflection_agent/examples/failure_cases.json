@@ -1,0 +1,77 @@
+[
+  {
+    "case_id": "case_missing_audience",
+    "old_plan_id": "plan_publish_blog_missing_audience",
+    "observation": {
+      "observation_id": "obs_missing_audience",
+      "step_id": "step_define_audience",
+      "status": "failure",
+      "observed_output": "",
+      "observed_error": "missing_audience",
+      "state_change": "draft_blocked",
+      "notes": "The article workflow cannot proceed because the target audience was not defined."
+    },
+    "expected_revision_type": "add_step",
+    "expected_recommended_revision": "add_audience_definition_step"
+  },
+  {
+    "case_id": "case_outline_missing",
+    "old_plan_id": "plan_publish_blog_bad_order",
+    "observation": {
+      "observation_id": "obs_outline_missing",
+      "step_id": "step_write_draft",
+      "status": "failure",
+      "observed_output": "",
+      "observed_error": "outline_missing",
+      "state_change": "draft_blocked",
+      "notes": "Drafting was attempted before creating a usable outline."
+    },
+    "expected_revision_type": "add_step",
+    "expected_recommended_revision": "add_or_reorder_outline_step"
+  },
+  {
+    "case_id": "case_review_skipped",
+    "old_plan_id": "plan_publish_blog_no_review",
+    "observation": {
+      "observation_id": "obs_review_skipped",
+      "step_id": "step_publish_article",
+      "status": "failure",
+      "observed_output": "",
+      "observed_error": "review_skipped",
+      "state_change": "publish_blocked",
+      "notes": "The publish step was attempted without a prior review step."
+    },
+    "expected_revision_type": "add_step",
+    "expected_recommended_revision": "add_review_before_publish"
+  },
+  {
+    "case_id": "case_tool_unavailable",
+    "old_plan_id": "plan_deploy_agent_demo",
+    "observation": {
+      "observation_id": "obs_tool_unavailable",
+      "step_id": "step_deploy_project",
+      "status": "blocked",
+      "observed_output": "",
+      "observed_error": "tool_unavailable",
+      "state_change": "deployment_blocked",
+      "notes": "Deployment could not continue because the deployment tool was unavailable."
+    },
+    "expected_revision_type": "mark_blocked",
+    "expected_recommended_revision": "mark_step_blocked"
+  },
+  {
+    "case_id": "case_blocked_dependency",
+    "old_plan_id": "plan_bad_dependency_order",
+    "observation": {
+      "observation_id": "obs_blocked_dependency",
+      "step_id": "step_write_draft",
+      "status": "blocked",
+      "observed_output": "",
+      "observed_error": "blocked_dependency",
+      "state_change": "execution_blocked",
+      "notes": "The step was blocked because its prerequisite had not completed."
+    },
+    "expected_revision_type": "reorder_step",
+    "expected_recommended_revision": "reorder_plan_dependencies"
+  }
+]
