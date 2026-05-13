@@ -76,10 +76,11 @@ Goal → Task Decomposition → Planning → Execution → Observation → Refle
 | 02 Planner-Executor Agent | Convert structured plans into executed step results | Runnable first prototype | Demo, tests, execution examples |
 | 03 Reflection Agent | Analyze failures and propose plan revisions | Runnable first prototype | Demo, tests, reflection examples |
 | 04 Multi-Agent Planning | Coordinate specialized agents around shared goals | Runnable first prototype | Demo, tests, coordination examples |
+| Integrated Demo | Connect decomposition, execution, reflection, and coordination | Runnable first integration | Integrated trace |
 
 ## Current status
 
-This repository has moved from foundation-only scaffold to four runnable prototypes.
+This repository has moved from foundation-only scaffold to four runnable prototypes and one runnable integrated demo.
 
 Current state:
 
@@ -94,17 +95,18 @@ Current state:
 9. Project 02 has a runnable planner-executor prototype.
 10. Project 03 has a runnable reflection prototype.
 11. Project 04 has a runnable multi-agent planning prototype.
-12. `requirements.txt` defines the test dependency.
-13. `run_all_tests.sh` runs all project test suites.
-14. `run_all_demos.sh` runs all project demos.
+12. Integrated demo connects Projects 01-04 into one trace.
+13. `requirements.txt` defines the test dependency.
+14. `run_all_tests.sh` runs all project test suites.
+15. `run_all_demos.sh` runs all project demos plus the integrated demo.
 
 Estimated repository status:
 
 ```text
-88-90% complete
+90% complete as a portfolio-grade scaffold
 ```
 
-This is not yet a production planning-agent system. It is now a structured repo with four runnable modules, unified run commands, and a clear path toward integration.
+This is not yet a production planning-agent system. It is now a structured repo with four runnable modules, one integrated demo, unified run commands, and a clear path toward deeper integration.
 
 ## Setup
 
@@ -136,6 +138,16 @@ python -m pytest \
 
 ```bash
 bash run_all_demos.sh
+```
+
+This runs:
+
+```text
+Project 01 demo
+Project 02 demo
+Project 03 demo
+Project 04 demo
+Integrated demo
 ```
 
 ## Repository structure
@@ -182,6 +194,10 @@ Reasoning-Planning-Agents/
 │       ├── examples/
 │       ├── tests/
 │       └── results/
+├── integrated_demo/
+│   ├── README.md
+│   ├── run_integrated_demo.py
+│   └── results/
 ├── shared/
 │   ├── interfaces.md
 │   └── trace_schema.md
@@ -271,6 +287,20 @@ What it demonstrates:
 Goal → Roles → Agent Contributions → Conflict Detection → Shared Plan → Evaluation → Trace
 ```
 
+## Integrated demo
+
+Run from the repository root:
+
+```bash
+python integrated_demo/run_integrated_demo.py
+```
+
+What it demonstrates:
+
+```text
+Goal → Decomposition → Plan execution failure → Reflection → Revision → Coordination → Shared plan
+```
+
 ## How to use this repository
 
 Start with:
@@ -284,8 +314,9 @@ Start with:
 7. `projects/02_planner_executor_agent/README.md`
 8. `projects/03_reflection_agent/README.md`
 9. `projects/04_multi_agent_planning/README.md`
+10. `integrated_demo/README.md`
 
-Then run all four project demos.
+Then run all project demos and the integrated demo.
 
 ## Evaluation criteria
 
@@ -299,6 +330,7 @@ Each project should be evaluated on:
 | Traceability | Can a human inspect the reasoning path? |
 | Failure recovery | Can the system revise after failure? |
 | Coordination quality | Can multiple role outputs become one shared plan? |
+| Integration quality | Can outputs move across modules into one trace? |
 | Modularity | Can components be tested independently? |
 
 ## Related direction
@@ -317,9 +349,9 @@ This repository connects to broader work on:
 
 Near-term roadmap:
 
-1. Run all four project demos locally and capture actual output.
-2. Connect Project 01 decomposition output to Project 02 execution input.
-3. Connect Project 02 failure outputs to Project 03 reflection input.
-4. Connect Project 03 revision outputs to Project 04 critic/coordinator roles.
-5. Build an integrated demo across decomposition, planning, execution, reflection, and multi-agent coordination.
-6. Add captured local outputs to each project result folder.
+1. Run all demos locally and capture actual output.
+2. Connect Project 01 decomposition output more directly to Project 02 plan generation.
+3. Connect Project 02 failure outputs more directly to Project 03 reflection input.
+4. Connect Project 03 revision outputs more directly to Project 04 critic/coordinator roles.
+5. Add captured local outputs to each project result folder.
+6. Add richer failure and unresolved-conflict cases.
