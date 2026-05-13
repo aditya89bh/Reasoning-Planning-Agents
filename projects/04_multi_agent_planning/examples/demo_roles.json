@@ -1,0 +1,146 @@
+{
+  "goal_id": "goal_publish_blog",
+  "required_steps": [
+    "define_audience",
+    "create_outline",
+    "write_draft",
+    "review_clarity",
+    "publish_article"
+  ],
+  "roles": [
+    {
+      "role_id": "role_decomposer",
+      "name": "Decomposer",
+      "responsibility": "Break the goal into clear subtasks.",
+      "inputs": [
+        "goal"
+      ],
+      "outputs": [
+        "subtasks"
+      ],
+      "constraints": [
+        "keep subtasks specific",
+        "avoid vague work items"
+      ]
+    },
+    {
+      "role_id": "role_planner",
+      "name": "Planner",
+      "responsibility": "Order subtasks into an executable plan.",
+      "inputs": [
+        "subtasks"
+      ],
+      "outputs": [
+        "ordered_plan"
+      ],
+      "constraints": [
+        "respect dependencies",
+        "avoid publishing before review"
+      ]
+    },
+    {
+      "role_id": "role_critic",
+      "name": "Critic",
+      "responsibility": "Detect missing steps, weak dependencies, and plan risks.",
+      "inputs": [
+        "ordered_plan"
+      ],
+      "outputs": [
+        "conflict_report"
+      ],
+      "constraints": [
+        "surface missing quality checks",
+        "do not add unnecessary steps"
+      ]
+    },
+    {
+      "role_id": "role_coordinator",
+      "name": "Coordinator",
+      "responsibility": "Merge agent contributions into one shared plan.",
+      "inputs": [
+        "subtasks",
+        "ordered_plan",
+        "conflict_report"
+      ],
+      "outputs": [
+        "shared_plan"
+      ],
+      "constraints": [
+        "resolve conflicts explicitly",
+        "produce final trace"
+      ]
+    }
+  ],
+  "contributions": [
+    {
+      "contribution_id": "contrib_decomposer_publish_blog",
+      "role_id": "role_decomposer",
+      "goal_id": "goal_publish_blog",
+      "proposed_steps": [
+        "define_audience",
+        "create_outline",
+        "write_draft",
+        "publish_article"
+      ],
+      "assumptions": [
+        "goal is an article publishing workflow"
+      ],
+      "risks": [
+        "review step may be missing"
+      ],
+      "confidence": 0.82
+    },
+    {
+      "contribution_id": "contrib_planner_publish_blog",
+      "role_id": "role_planner",
+      "goal_id": "goal_publish_blog",
+      "proposed_steps": [
+        "define_audience",
+        "create_outline",
+        "write_draft",
+        "publish_article"
+      ],
+      "assumptions": [
+        "steps should be sequential"
+      ],
+      "risks": [
+        "publishing may happen before review"
+      ],
+      "confidence": 0.78
+    },
+    {
+      "contribution_id": "contrib_critic_publish_blog",
+      "role_id": "role_critic",
+      "goal_id": "goal_publish_blog",
+      "proposed_steps": [
+        "review_clarity"
+      ],
+      "assumptions": [
+        "quality check is required before publishing"
+      ],
+      "risks": [
+        "without review, output quality may degrade"
+      ],
+      "confidence": 0.9
+    },
+    {
+      "contribution_id": "contrib_coordinator_publish_blog",
+      "role_id": "role_coordinator",
+      "goal_id": "goal_publish_blog",
+      "proposed_steps": [],
+      "assumptions": [
+        "coordinator will merge all contributions"
+      ],
+      "risks": [],
+      "confidence": 0.86
+    }
+  ],
+  "expected_shared_steps": [
+    "define_audience",
+    "create_outline",
+    "write_draft",
+    "review_clarity",
+    "publish_article"
+  ],
+  "expected_status": "valid"
+}
